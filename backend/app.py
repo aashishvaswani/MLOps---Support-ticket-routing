@@ -4,7 +4,7 @@ import joblib
 import re
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 
 # Load model and vectorizer
 model = joblib.load('ticket_classification_model.pkl')
@@ -22,11 +22,11 @@ def clean_text(text):
 
 @app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
-    print(f">>> Request method: {request.method}")
+    print(f"🟡 Request received at /predict — Method: {request.method}")
 
     if request.method == 'OPTIONS':
         response = make_response()
-        response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+        response.headers.add("Access-Control-Allow-Origin", "*")
         response.headers.add("Access-Control-Allow-Headers", "Content-Type")
         response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
         return response, 200
@@ -35,7 +35,6 @@ def predict():
     print(">>> Received POST:", data)
 
     text = data.get('text', '')
-
     if not text:
         return jsonify({'error': 'No text provided'}), 400
 
@@ -45,4 +44,4 @@ def predict():
     return jsonify({'prediction': labels[pred]}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", port=5000)

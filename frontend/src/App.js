@@ -9,19 +9,18 @@ function App() {
 
   const handlePredict = async () => {
     setLoading(true);
-    console.log("Sending text:", text); // 👈 debug
+    console.log("Sending text:", text);
+
     try {
-      const res = await axios.post('http://127.0.0.1:5000/predict', { text }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });      
+      const api = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const res = await axios.post(`${api}/predict`, { text });
       console.log("Response from backend:", res.data);
       setPrediction(res.data.prediction);
     } catch (err) {
-      setPrediction(`Error: ${err.message}`);
       console.error("Request failed:", err);
+      setPrediction(`Error: ${err.message}`);
     }
+
     setLoading(false);
   };
 
