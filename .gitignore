@@ -13,7 +13,41 @@ env/
 
 # === React / Node ===
 node_modules/
-build/
+build/# === Python / Flask ===
+__pycache__/
+*.py[cod]
+*.pkl
+*.log
+
+# === Pytest ===
+.pytest_cache/
+
+# === Virtual environments ===
+venv/
+env/
+.venv/
+
+# === Tests ===
+backend/tests/__pycache__/
+
+# === React / Node ===
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.env
+
+# === Docker artifacts (if any)
+*.container
+*.pid
+
+# === System Files ===
+.DS_Store
+Thumbs.db
+
+# === IDE / Editor Settings ===
+.vscode/
+.idea/
+
 dist/
 .npm/
 
