@@ -4,3 +4,4 @@ joblib
 flask
 flask-cors
 pytest
+python-json-logger

@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
+from logger_config import setup_logger
 import joblib
 import re
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
+
+# Setup logger
+logger = setup_logger()
 
 # Load model and vectorizer
 model = joblib.load('ticket_classification_model.pkl')
@@ -22,7 +26,12 @@ def clean_text(text):
 
 @app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
-    print(f"🟡 Request received at /predict — Method: {request.method}")
+    logger.info("Request received", extra={
+    "endpoint": "/predict",
+    "method": request.method,
+    "prediction": None
+    })
+
 
     if request.method == 'OPTIONS':
         response = make_response()
@@ -32,15 +41,28 @@ def predict():
         return response, 200
 
     data = request.get_json()
-    print(">>> Received POST:", data)
+
+    logger.info("Input received", extra={
+        "endpoint": "/predict",
+        "method": "POST",
+        "prediction": None
+    })
+
 
     text = data.get('text', '')
     if not text:
+        logger.warning("No text provided", extra={"endpoint": "/predict"})
         return jsonify({'error': 'No text provided'}), 400
 
     cleaned = clean_text(text)
     vectorized = vectorizer.transform([cleaned])
     pred = model.predict(vectorized)[0]
+
+    logger.info("Prediction made", extra={
+        "endpoint": "/predict",
+        "prediction": labels[pred]
+    })
+
     return jsonify({'prediction': labels[pred]}), 200
 
 if __name__ == '__main__':

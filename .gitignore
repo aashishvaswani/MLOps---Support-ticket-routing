@@ -4,21 +4,6 @@ __pycache__/
 *.pkl
 *.log
 
-# Virtual environments
-venv/
-env/
-
-# Jupyter (if any Colab exports)
-.ipynb_checkpoints/
-
-# === React / Node ===
-node_modules/
-build/# === Python / Flask ===
-__pycache__/
-*.py[cod]
-*.pkl
-*.log
-
 # === Pytest ===
 .pytest_cache/
 
@@ -26,6 +11,9 @@ __pycache__/
 venv/
 env/
 .venv/
+
+# === Jupyter / Notebooks ===
+.ipynb_checkpoints/
 
 # === Tests ===
 backend/tests/__pycache__/
@@ -36,7 +24,7 @@ frontend/build/
 frontend/dist/
 frontend/.env
 
-# === Docker artifacts (if any)
+# === Docker artifacts ===
 *.container
 *.pid
 
@@ -47,14 +35,5 @@ Thumbs.db
 # === IDE / Editor Settings ===
 .vscode/
 .idea/
-
 dist/
 .npm/
-
-# === System Files ===
-.DS_Store
-Thumbs.db
-
-# === IDE / Editor Settings ===
-.vscode/
-.idea/
