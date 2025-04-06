@@ -26,13 +26,6 @@ def clean_text(text):
 
 @app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
-    logger.info("Request received", extra={
-    "endpoint": "/predict",
-    "method": request.method,
-    "prediction": None
-    })
-
-
     if request.method == 'OPTIONS':
         response = make_response()
         response.headers.add("Access-Control-Allow-Origin", "*")
@@ -41,15 +34,22 @@ def predict():
         return response, 200
 
     data = request.get_json()
+    text = data.get('text', '')
+
+    logger.info("Request received", extra={
+        "endpoint": "/predict",
+        "method": request.method,
+        "prediction": None,
+        "input": text or None
+    })
 
     logger.info("Input received", extra={
         "endpoint": "/predict",
         "method": "POST",
-        "prediction": None
+        "prediction": None,
+        "input": text or None
     })
 
-
-    text = data.get('text', '')
     if not text:
         logger.warning("No text provided", extra={"endpoint": "/predict"})
         return jsonify({'error': 'No text provided'}), 400
@@ -60,7 +60,9 @@ def predict():
 
     logger.info("Prediction made", extra={
         "endpoint": "/predict",
-        "prediction": labels[pred]
+        "prediction": labels[pred],
+        "input": text or None,
+        "method": "POST"
     })
 
     return jsonify({'prediction': labels[pred]}), 200

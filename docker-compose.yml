@@ -8,6 +8,8 @@ services:
       - "5000:5000"
     container_name: flask-backend
     restart: always
+    volumes:
+      - ./backend/logs:/app/logs
 
   frontend:
     build:

@@ -1,5 +1,5 @@
 import logging
-from pythonjsonlogger import jsonlogger
+from pythonjsonlogger import jsonlogger #type: ignore
 import os
 
 def setup_logger():
