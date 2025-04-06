@@ -4,25 +4,19 @@
   tasks:
 
     - name: Stop and remove existing backend container
-      shell: |
-        docker rm -f flask-backend || true
+      shell: docker rm -f flask-backend || true
 
     - name: Stop and remove existing frontend container
-      shell: |
-        docker rm -f react-frontend || true
+      shell: docker rm -f react-frontend || true
 
-    - name: Build Flask backend Docker image
-      shell: |
-        docker build -t flask-backend ./backend
+    - name: Pull Flask backend image
+      shell: docker pull aashishvaswani/finalproject-backend:latest
 
-    - name: Build React frontend Docker image
-      shell: |
-        docker build -t react-frontend ./frontend
+    - name: Pull React frontend image
+      shell: docker pull aashishvaswani/finalproject-frontend:latest
 
     - name: Run Flask backend container
-      shell: |
-        docker run -d --name flask-backend -p 5000:5000 flask-backend
+      shell: docker run -d --name flask-backend -p 5000:5000 aashishvaswani/finalproject-backend:latest
 
     - name: Run React frontend container
-      shell: |
-        docker run -d --name react-frontend -p 3000:80 react-frontend
+      shell: docker run -d --name react-frontend -p 3000:80 aashishvaswani/finalproject-frontend:latest

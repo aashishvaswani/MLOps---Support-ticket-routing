@@ -4,6 +4,7 @@ from logger_config import setup_logger
 import joblib
 import re
 import time  # for latency tracking
+import os
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
@@ -11,9 +12,14 @@ CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 # Setup logger
 logger = setup_logger()
 
-# Load model and vectorizer
-model = joblib.load('ticket_classification_model.pkl')
-vectorizer = joblib.load('tfidf_vectorizer.pkl')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+model_path = os.path.join(BASE_DIR, 'ticket_classification_model.pkl')
+vectorizer_path = os.path.join(BASE_DIR, 'tfidf_vectorizer.pkl')
+
+model = joblib.load(model_path)
+vectorizer = joblib.load(vectorizer_path)
+
 labels = [
     'Access', 'Administrative rights', 'HR Support', 'Hardware',
     'Internal Project', 'Miscellaneous', 'Purchase', 'Storage'
