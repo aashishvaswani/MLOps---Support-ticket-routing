@@ -10,6 +10,8 @@ RUN apt-get update && \
     dpkg-reconfigure -f noninteractive tzdata
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN mkdir -p logs
+
 COPY . .
 
 COPY ticket_classification_model.pkl .

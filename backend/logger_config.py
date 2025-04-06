@@ -6,20 +6,24 @@ def setup_logger():
     log_dir = 'logs'
     log_path = os.path.join(log_dir, 'app.log')
 
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-        
+    os.makedirs(log_dir, exist_ok=True)
+
     logger = logging.getLogger('ticket_classifier')
     logger.setLevel(logging.INFO)
 
     if not logger.handlers:
-        handler = logging.FileHandler(log_path)
-        handler.setLevel(logging.INFO)
+        file_handler = logging.FileHandler(log_path)
+        file_handler.setLevel(logging.INFO)
+
+        stdout_handler = logging.StreamHandler()
 
         log_format = '%(asctime)s %(levelname)s %(message)s %(endpoint)s %(prediction)s %(method)s %(input)s'
         formatter = jsonlogger.JsonFormatter(log_format)
-        handler.setFormatter(formatter)
 
-        logger.addHandler(handler)
+        file_handler.setFormatter(formatter)
+        stdout_handler.setFormatter(formatter)
+
+        logger.addHandler(file_handler)
+        logger.addHandler(stdout_handler)
 
     return logger
