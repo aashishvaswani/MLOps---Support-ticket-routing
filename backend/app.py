@@ -3,6 +3,7 @@ from flask_cors import CORS
 from logger_config import setup_logger
 import joblib
 import re
+import time  # for latency tracking
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
@@ -26,6 +27,8 @@ def clean_text(text):
 
 @app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
+    start_time = time.time()
+
     if request.method == 'OPTIONS':
         response = make_response()
         response.headers.add("Access-Control-Allow-Origin", "*")
@@ -51,21 +54,32 @@ def predict():
     })
 
     if not text:
-        logger.warning("No text provided", extra={"endpoint": "/predict"})
+        logger.warning("No text provided", extra={
+            "endpoint": "/predict",
+            "method": "POST",
+            "input": None,
+            "latency_ms": int((time.time() - start_time) * 1000),
+            "status_code": 400
+        })
         return jsonify({'error': 'No text provided'}), 400
 
     cleaned = clean_text(text)
     vectorized = vectorizer.transform([cleaned])
     pred = model.predict(vectorized)[0]
 
+    latency_ms = int((time.time() - start_time) * 1000)
+    status_code = 200
+
     logger.info("Prediction made", extra={
         "endpoint": "/predict",
         "prediction": labels[pred],
         "input": text or None,
-        "method": "POST"
+        "method": "POST",
+        "latency_ms": latency_ms,
+        "status_code": status_code
     })
 
-    return jsonify({'prediction': labels[pred]}), 200
+    return jsonify({'prediction': labels[pred]}), status_code
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)
