@@ -38,7 +38,7 @@ services:
     image: docker.elastic.co/logstash/logstash:8.13.4
     container_name: logstash
     volumes:
-      - ./elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./elk/logstash:/usr/share/logstash/pipeline
       - flask_logs:/usr/share/logstash/logs
     depends_on:
       - elasticsearch
