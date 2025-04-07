@@ -9,7 +9,7 @@ services:
       - "5000:5000"
     restart: always
     volumes:
-      - flask_logs:/app/logs
+      - ./backend/logs:/app/logs
     depends_on:
       - elasticsearch
       - logstash
@@ -39,7 +39,7 @@ services:
     container_name: logstash
     volumes:
       - ./elk/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - flask_logs:/usr/share/logstash/logs
+      - ./backend/logs:/usr/share/logstash/logs
     depends_on:
       - elasticsearch
     ports:
@@ -54,6 +54,3 @@ services:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     depends_on:
       - elasticsearch
-
-volumes:
-  flask_logs:
