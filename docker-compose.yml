@@ -33,6 +33,11 @@ services:
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
     ports:
       - "9200:9200"
+    healthcheck:
+      test: curl -s http://localhost:9200/_cluster/health | grep -q '"status":"green"' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   logstash:
     image: docker.elastic.co/logstash/logstash:8.13.4
@@ -41,7 +46,8 @@ services:
       - ./elk/logstash:/usr/share/logstash/pipeline
       - flask_logs:/usr/share/logstash/logs
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     ports:
       - "5044:5000"
 
@@ -53,7 +59,8 @@ services:
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
 
 volumes:
   flask_logs:
