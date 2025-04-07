@@ -14,9 +14,6 @@ RUN mkdir -p logs
 
 COPY . .
 
-COPY ticket_classification_model.pkl .
-COPY tfidf_vectorizer.pkl .
-
 # Expose the Flask port
 EXPOSE 5000
 

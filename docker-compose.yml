@@ -11,8 +11,17 @@ services:
     volumes:
       - flask_logs:/app/logs
     depends_on:
-      - elasticsearch
       - logstash
+      - ml-service
+    # elasticsearch not directly depended-on
+
+  ml-service:
+    build:
+      context: ./ml_service
+    container_name: ml-service
+    ports:
+      - "6000:6000"
+    restart: always
 
   frontend:
     build:
@@ -34,10 +43,11 @@ services:
     ports:
       - "9200:9200"
     healthcheck:
-      test: curl -s http://localhost:9200/_cluster/health | grep -q '"status":"green"' || exit 1
+      test: curl -s http://localhost:9200 || exit 1
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 30
+    # this only checks if ES is up, not full cluster status
 
   logstash:
     image: docker.elastic.co/logstash/logstash:8.13.4

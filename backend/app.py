@@ -1,10 +1,8 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from logger_config import setup_logger
-import joblib
-import re
-import time  # for latency tracking
-import os
+import requests
+import time
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
@@ -12,24 +10,7 @@ CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*"}})
 # Setup logger
 logger = setup_logger()
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-model_path = os.path.join(BASE_DIR, 'ticket_classification_model.pkl')
-vectorizer_path = os.path.join(BASE_DIR, 'tfidf_vectorizer.pkl')
-
-model = joblib.load(model_path)
-vectorizer = joblib.load(vectorizer_path)
-
-labels = [
-    'Access', 'Administrative rights', 'HR Support', 'Hardware',
-    'Internal Project', 'Miscellaneous', 'Purchase', 'Storage'
-]
-
-def clean_text(text):
-    text = text.lower()
-    text = re.sub(r'\W', ' ', text)
-    text = re.sub(r'\s+', ' ', text)
-    return text.strip()
+ML_SERVICE_URL = "http://ml-service:6000/predict"
 
 @app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
@@ -45,20 +26,6 @@ def predict():
     data = request.get_json()
     text = data.get('text', '')
 
-    logger.info("Request received", extra={
-        "endpoint": "/predict",
-        "method": request.method,
-        "prediction": None,
-        "input": text or None
-    })
-
-    logger.info("Input received", extra={
-        "endpoint": "/predict",
-        "method": "POST",
-        "prediction": None,
-        "input": text or None
-    })
-
     if not text:
         logger.warning("No text provided", extra={
             "endpoint": "/predict",
@@ -69,23 +36,33 @@ def predict():
         })
         return jsonify({'error': 'No text provided'}), 400
 
-    cleaned = clean_text(text)
-    vectorized = vectorizer.transform([cleaned])
-    pred = model.predict(vectorized)[0]
+    try:
+        response = requests.post(ML_SERVICE_URL, json={'text': text})
+        response.raise_for_status()
+        prediction = response.json()
+        status_code = response.status_code
+    except Exception as e:
+        logger.error("ML service call failed", extra={
+            "endpoint": "/predict",
+            "input": text,
+            "method": "POST",
+            "error": str(e),
+            "status_code": 500
+        })
+        return jsonify({'error': 'Failed to get prediction from ML service'}), 500
 
     latency_ms = int((time.time() - start_time) * 1000)
-    status_code = 200
 
-    logger.info("Prediction made", extra={
+    logger.info("Prediction successful", extra={
         "endpoint": "/predict",
-        "prediction": labels[pred],
-        "input": text or None,
+        "prediction": prediction.get('prediction'),
+        "input": text,
         "method": "POST",
         "latency_ms": latency_ms,
         "status_code": status_code
     })
 
-    return jsonify({'prediction': labels[pred]}), status_code
+    return jsonify(prediction), status_code
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)
