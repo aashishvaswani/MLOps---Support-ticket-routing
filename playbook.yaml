@@ -1,13 +1,18 @@
-- name: Deploy Flask backend and React frontend locally
+---
+- name: Deploy Flask backend, ML service, and React frontend using Docker
   hosts: local
-  become: false
+  become: true
+  vars:
+    ansible_become_password: "{{ lookup('env', 'ANSIBLE_SUDO_PASSWORD') }}"
   tasks:
-
-    - name: Stop and remove existing backend container
+    - name: Stop and remove existing Flask backend container
       shell: docker rm -f flask-backend || true
 
-    - name: Stop and remove existing frontend container
+    - name: Stop and remove existing React frontend container
       shell: docker rm -f react-frontend || true
+
+    - name: Stop and remove existing ML service container
+      shell: docker rm -f ml-service || true
 
     - name: Pull Flask backend image
       shell: docker pull aashishvaswani/finalproject-backend:latest
@@ -15,8 +20,14 @@
     - name: Pull React frontend image
       shell: docker pull aashishvaswani/finalproject-frontend:latest
 
+    - name: Pull ML service image
+      shell: docker pull aashishvaswani/finalproject-ml-service:latest
+
     - name: Run Flask backend container
       shell: docker run -d --name flask-backend -p 5000:5000 aashishvaswani/finalproject-backend:latest
+
+    - name: Run ML service container
+      shell: docker run -d --name ml-service -p 6000:6000 aashishvaswani/finalproject-ml-service:latest
 
     - name: Run React frontend container
       shell: docker run -d --name react-frontend -p 3000:80 aashishvaswani/finalproject-frontend:latest
