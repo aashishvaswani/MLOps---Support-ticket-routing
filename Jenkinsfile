@@ -36,9 +36,9 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    sh 'docker build --no-cache -t $BACKEND_IMAGE ./backend'
-                    sh 'docker build --no-cache -t $FRONTEND_IMAGE ./frontend'
-                    sh 'docker build --no-cache -t $MLSERVICE_IMAGE ./ml_service'
+                    sh 'docker build -t $BACKEND_IMAGE ./backend'
+                    sh 'docker build -t $FRONTEND_IMAGE ./frontend'
+                    sh 'docker build -t $MLSERVICE_IMAGE ./ml_service'
                 }
             }
         }
