@@ -1,6 +1,6 @@
 - name: Deploy all services using Docker Compose
   hosts: local
-  become: false
+  become: true
   tasks:
     - name: Stop all running containers (optional cleanup)
       shell: docker-compose -f docker-compose.yml down
