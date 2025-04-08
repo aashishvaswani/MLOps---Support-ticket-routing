@@ -1,33 +1,13 @@
----
-- name: Deploy Flask backend, ML service, and React frontend using Docker
+- name: Deploy all services using Docker Compose
   hosts: local
-  become: true
-  vars:
-    ansible_become_password: "{{ lookup('env', 'ANSIBLE_SUDO_PASSWORD') }}"
+  become: false
   tasks:
-    - name: Stop and remove existing Flask backend container
-      shell: docker rm -f flask-backend || true
+    - name: Stop all running containers (optional cleanup)
+      shell: docker-compose -f docker-compose.yml down
+      args:
+        chdir: "{{ playbook_dir }}"
 
-    - name: Stop and remove existing React frontend container
-      shell: docker rm -f react-frontend || true
-
-    - name: Stop and remove existing ML service container
-      shell: docker rm -f ml-service || true
-
-    - name: Pull Flask backend image
-      shell: docker pull aashishvaswani/finalproject-backend:latest
-
-    - name: Pull React frontend image
-      shell: docker pull aashishvaswani/finalproject-frontend:latest
-
-    - name: Pull ML service image
-      shell: docker pull aashishvaswani/finalproject-ml-service:latest
-
-    - name: Run Flask backend container
-      shell: docker run -d --name flask-backend -p 5000:5000 aashishvaswani/finalproject-backend:latest
-
-    - name: Run ML service container
-      shell: docker run -d --name ml-service -p 6000:6000 aashishvaswani/finalproject-ml-service:latest
-
-    - name: Run React frontend container
-      shell: docker run -d --name react-frontend -p 3000:80 aashishvaswani/finalproject-frontend:latest
+    - name: Start all services with Docker Compose
+      shell: docker-compose -f docker-compose.yml up -d --build
+      args:
+        chdir: "{{ playbook_dir }}"
