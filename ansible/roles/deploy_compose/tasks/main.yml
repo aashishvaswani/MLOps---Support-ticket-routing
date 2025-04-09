@@ -1,0 +1,39 @@
+- name: Check if backend folder exists
+  stat:
+    path: "{{ project_root }}/backend"
+  register: backend_folder
+
+- name: Check if ml_service folder exists
+  stat:
+    path: "{{ project_root }}/ml_service"
+  register: ml_folder
+
+- name: Check if frontend folder exists
+  stat:
+    path: "{{ project_root }}/frontend"
+  register: frontend_folder
+
+- name: Abort if backend folder is missing
+  fail:
+    msg: "🚨 'backend' folder is missing. Aborting to prevent docker-compose build errors."
+  when: not backend_folder.stat.exists
+
+- name: Abort if ml_service folder is missing
+  fail:
+    msg: "🚨 'ml_service' folder is missing. Aborting to prevent docker-compose build errors."
+  when: not ml_folder.stat.exists
+
+- name: Abort if frontend folder is missing
+  fail:
+    msg: "🚨 'frontend' folder is missing. Aborting to prevent docker-compose build errors."
+  when: not frontend_folder.stat.exists
+
+- name: Stop all running containers (optional cleanup)
+  shell: docker-compose -f docker-compose.yml down
+  args:
+    chdir: "{{ project_root }}"
+
+- name: Start all services with Docker Compose
+  shell: docker-compose -f docker-compose.yml up -d --build
+  args:
+    chdir: "{{ project_root }}"

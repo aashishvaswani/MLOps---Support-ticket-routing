@@ -13,8 +13,7 @@ services:
     depends_on:
       - logstash
       - ml-service
-    # elasticsearch not directly depended-on
-
+      
   ml-service:
     build:
       context: ./ml_service
