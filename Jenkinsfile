@@ -85,7 +85,7 @@ pipeline {
         
                     sh """
                         ANSIBLE_FORCE_COLOR=1 \
-                        ansible-playbook -i ansible/inventory.ini ansible/playbook.yml \
+                        ansible-playbook -i ansible/inventory.ini ansible/playbook.yaml \
                         --extra-vars '@extra-vars.yml'
                     """
 
