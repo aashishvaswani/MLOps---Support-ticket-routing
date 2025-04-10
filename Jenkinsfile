@@ -70,7 +70,7 @@ pipeline {
                 '''
             }
         }
-
+        /*
         stage('Deploy with Ansible') {
             steps {
                 script {
@@ -94,9 +94,16 @@ pipeline {
                 }
             }
         }
+        */
 
-
-
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                    chmod +x deploy-to-k8s.sh
+                    ./deploy-to-k8s.sh
+                '''
+            }
+        }
 
         stage('Verify Log Forwarding (Debug)') {
             steps {
