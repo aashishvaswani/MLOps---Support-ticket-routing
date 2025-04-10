@@ -32,9 +32,11 @@ kubectl wait --for=condition=Ready pods --all --timeout=180s
 echo "Starting port-forwarding..."
 pkill -f "kubectl port-forward" >/dev/null 2>&1
 
+sleep 5
 kubectl port-forward svc/backend-service 5000:5000 &
 kubectl port-forward svc/frontend-service 3000:3000 &
 kubectl port-forward svc/ml-service 6000:6000 &
+kubectl wait --for=condition=ready pod -l app=kibana --timeout=60s
 kubectl port-forward svc/kibana-service 5601:5601 &
 
 echo "Deployment to Kubernetes completed successfully!"
