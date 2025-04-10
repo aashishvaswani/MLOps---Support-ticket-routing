@@ -33,12 +33,12 @@ echo "Starting port-forwarding..."
 pkill -f "kubectl port-forward" >/dev/null 2>&1
 
 kubectl port-forward svc/backend-service 5000:5000 &
-kubectl port-forward svc/frontend-service 3000:80 &
+kubectl port-forward svc/frontend-service 3000:3000 &
 kubectl port-forward svc/ml-service 6000:6000 &
-kubectl port-forward svc/kibana 5601:5601 &
+kubectl port-forward svc/kibana-service 5601:5601 &
 
 echo "Deployment to Kubernetes completed successfully!"
-echo "🔗 Services available at:"
+echo "Services available at:"
 echo "   ▪ Backend:     http://localhost:5000"
 echo "   ▪ Frontend:    http://localhost:3000"
 echo "   ▪ ML Service:  http://localhost:6000"
