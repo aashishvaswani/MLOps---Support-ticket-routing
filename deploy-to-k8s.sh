@@ -1,7 +1,10 @@
 #!/bin/bash
 
-echo "▶ Switching Docker to Minikube context..."
+echo "Switching Docker to Minikube context..."
 eval $(minikube docker-env)
+
+echo "Starting Minikube (if not already running)..."
+minikube status >/dev/null 2>&1 || minikube start
 
 echo "Building Docker images inside Minikube..."
 docker build -t finalproject-backend ./backend
@@ -23,4 +26,20 @@ echo "Applying HPA Policies..."
 kubectl apply -f k8s/backend-hpa.yaml
 kubectl apply -f k8s/mlservice-hpa.yaml
 
+echo "Waiting for all pods to be ready..."
+kubectl wait --for=condition=Ready pods --all --timeout=180s
+
+echo "Starting port-forwarding..."
+pkill -f "kubectl port-forward" >/dev/null 2>&1
+
+kubectl port-forward svc/backend-service 5000:5000 &
+kubectl port-forward svc/frontend-service 3000:80 &
+kubectl port-forward svc/ml-service 6000:6000 &
+kubectl port-forward svc/kibana 5601:5601 &
+
 echo "Deployment to Kubernetes completed successfully!"
+echo "🔗 Services available at:"
+echo "   ▪ Backend:     http://localhost:5000"
+echo "   ▪ Frontend:    http://localhost:3000"
+echo "   ▪ ML Service:  http://localhost:6000"
+echo "   ▪ Kibana:      http://localhost:5601"
