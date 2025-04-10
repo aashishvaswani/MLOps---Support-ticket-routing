@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: finalproject-frontend
+        image: finalproject-frontend:v2
         imagePullPolicy: Never
         ports:
         - containerPort: 80
