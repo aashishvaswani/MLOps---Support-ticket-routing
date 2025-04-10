@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+data:
+  logstash.conf: |
+    input {
+      file {
+        path => "/usr/share/logstash/logs/app.log"
+        start_position => "beginning"
+        sincedb_path => "/dev/null"
+        codec => "json"
+      }
+    }
+    output {
+    elasticsearch {
+      hosts => ["http://elasticsearch-service:9200"]
+      index => "flask-logs"
+    }
+      stdout { codec => rubydebug }
+    }

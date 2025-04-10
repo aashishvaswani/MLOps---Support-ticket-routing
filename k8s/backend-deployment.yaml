@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: finalproject-backend
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: "100m"
+          limits:
+            cpu: "500m"
+        volumeMounts:
+        - name: shared-logs
+          mountPath: /app/logs
+      volumes:
+      - name: shared-logs
+        hostPath:
+          path: /tmp/shared-logs
+          type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: ClusterIP
