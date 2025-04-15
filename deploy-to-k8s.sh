@@ -29,7 +29,7 @@ kubectl apply -f k8s/backend-hpa.yaml
 kubectl apply -f k8s/mlservice-hpa.yaml
 
 echo "Waiting for all pods to be ready..."
-kubectl wait --for=condition=Ready pods --all --timeout=180s
+kubectl wait --for=condition=Ready pods --all --timeout=300s
 
 echo "Starting port-forwarding..."
 pkill -f "kubectl port-forward" >/dev/null 2>&1

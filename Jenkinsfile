@@ -113,7 +113,7 @@ pipeline {
             steps {
                 script {
                     sh 'sleep 30'
-                    sh 'docker exec logstash tail -n 10 /usr/share/logstash/logs/app.log || echo "Log file not found"'
+                    sh 'kubectl logs deploy/logstash --tail=10'
                 }
             }
         }
