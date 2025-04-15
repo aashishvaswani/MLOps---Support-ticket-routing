@@ -5,7 +5,7 @@ pipeline {
         BACKEND_IMAGE = "finalproject-backend"
         FRONTEND_IMAGE = "finalproject-frontend"
         MLSERVICE_IMAGE = "finalproject-ml-service"
-        RETRAIN_IMAGE = "finalproject-retrainer"
+        RETRAIN_IMAGE = "finalproject-ml-service-retrain"
         VAULT_SECRET_PATH = "secret/ansible"
         PATH = "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:${env.PATH}"
     }

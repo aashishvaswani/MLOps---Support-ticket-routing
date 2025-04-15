@@ -10,7 +10,7 @@ echo "Building Docker images inside Minikube..."
 docker build -t finalproject-backend ./backend
 docker build -t finalproject-frontend ./frontend
 docker build -t finalproject-ml-service ./ml_service
-docker build -t finalproject-retrainer -f ml_service/Dockerfile.retrainer ./ml_service
+docker build -t finalproject-ml-service-retrain -f ml_service/Dockerfile.retrainer ./ml_service
 
 echo "Applying ELK Stack (Elasticsearch, Kibana, Logstash)..."
 kubectl apply -f k8s/elk/logstash-configmap.yaml
