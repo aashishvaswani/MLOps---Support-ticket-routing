@@ -5,6 +5,7 @@ pipeline {
         BACKEND_IMAGE = "finalproject-backend"
         FRONTEND_IMAGE = "finalproject-frontend"
         MLSERVICE_IMAGE = "finalproject-ml-service"
+        RETRAIN_IMAGE = "finalproject-retrainer"
         VAULT_SECRET_PATH = "secret/ansible"
         PATH = "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:${env.PATH}"
     }
@@ -39,6 +40,7 @@ pipeline {
                     sh 'docker build -t $BACKEND_IMAGE ./backend'
                     sh 'docker build -t $FRONTEND_IMAGE ./frontend'
                     sh 'docker build -t $MLSERVICE_IMAGE ./ml_service'
+                    sh 'docker build -t $RETRAIN_IMAGE -f ml_service/Dockerfile.retrainer ./ml_service'
                 }
             }
         }
@@ -63,10 +65,12 @@ pipeline {
                     docker tag finalproject-backend aashishvaswani/finalproject-backend:latest
                     docker tag finalproject-frontend aashishvaswani/finalproject-frontend:latest
                     docker tag finalproject-ml-service aashishvaswani/finalproject-ml-service:latest
+                    docker tag $RETRAIN_IMAGE aashishvaswani/$RETRAIN_IMAGE:latest
     
                     docker push aashishvaswani/finalproject-backend:latest
                     docker push aashishvaswani/finalproject-frontend:latest
                     docker push aashishvaswani/finalproject-ml-service:latest
+                    docker push aashishvaswani/$RETRAIN_IMAGE:latest
                 '''
             }
         }
