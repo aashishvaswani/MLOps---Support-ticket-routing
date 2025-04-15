@@ -46,3 +46,84 @@ button:disabled {
   font-size: 1.2rem;
   color: #00ffc6;
 }
+
+.result-block {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #292943;
+  border-radius: 12px;
+  box-shadow: 0 0 10px #00adb5;
+  transition: all 0.3s ease;
+}
+
+.feedback-buttons {
+  margin-top: 1rem;
+}
+
+.feedback-buttons span {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.feedback-buttons button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.feedback-buttons .yes {
+  background-color: #4caf50;
+  color: white;
+}
+
+.feedback-buttons .no {
+  background-color: #f44336;
+  color: white;
+}
+
+.feedback-form {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.feedback-form input {
+  padding: 0.5rem;
+  width: 80%;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #777;
+  background-color: #1e1e2f;
+  color: white;
+}
+
+.feedback-form button {
+  padding: 0.5rem 1.5rem;
+  background-color: #00adb5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.feedback-msg {
+  margin-top: 0.5rem;
+  color: #0f0;
+  font-weight: bold;
+}
+
+.feedback-form select {
+  padding: 0.5rem;
+  width: 80%;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #777;
+  background-color: #1e1e2f;
+  color: white;
+}

@@ -46,13 +46,22 @@ y = le.fit_transform(df['Topic_group'])
 
 # %%
 from sklearn.model_selection import train_test_split
+from collections import Counter
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+label_counts = Counter(y)
+min_class_size = min(label_counts.values())
+
+if min_class_size >= 2:
+    stratify_param = y
+else:
+    stratify_param = None
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=stratify_param)
 
 # %%
 from sklearn.linear_model import LogisticRegression
 
-model = LogisticRegression(max_iter=1000)
+model = LogisticRegression(max_iter=1000, n_jobs=1)
 model.fit(X_train, y_train)
 
 # %%

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retrainer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: retrainer
+  template:
+    metadata:
+      labels:
+        app: retrainer
+    spec:
+      containers:
+        - name: retrainer
+          image: finalproject-ml-service-retrain
+          imagePullPolicy: Never
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /app/logs
+      volumes:
+        - name: shared-logs
+          hostPath:
+            path: /tmp/shared-logs
+            type: DirectoryOrCreate

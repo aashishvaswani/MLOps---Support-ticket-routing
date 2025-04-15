@@ -1,0 +1,19 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy retrainer script and training files
+COPY retrain.py .
+COPY model_script.py .
+COPY all_tickets_processed_improved_v3.csv .
+COPY ticket_classification_model.pkl .
+COPY tfidf_vectorizer.pkl .
+
+# Optional safeguard — make sure logs dir exists
+RUN mkdir -p logs
+
+CMD ["python", "-u", "retrain.py"]
