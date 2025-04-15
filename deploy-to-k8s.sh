@@ -21,6 +21,7 @@ echo "Deploying Core App Services..."
 kubectl apply -f k8s/backend-deployment.yaml
 kubectl apply -f k8s/mlservice-deployment.yaml
 kubectl apply -f k8s/frontend-deployment.yaml
+kubectl apply -f k8s/retrainer-deployment.yaml
 
 echo "Applying HPA Policies..."
 kubectl apply -f k8s/backend-hpa.yaml
