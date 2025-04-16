@@ -1,0 +1,67 @@
+- name: Show project root
+  debug:
+    msg: "🗂️ Project root is {{ project_root }}"
+
+- name: Show Docker environment config for Minikube
+  shell: minikube docker-env --shell bash
+  register: docker_env_output
+
+- name: Print Docker env output
+  debug:
+    var: docker_env_output.stdout_lines
+
+- name: Parse Docker environment for Ansible
+  set_fact:
+    docker_env_vars: "{{ dict(docker_env_output.stdout | regex_findall('export ([^=]+)=\\\"([^\\\"]+)\\\"')) }}"
+
+- name: Build Docker images inside Minikube
+  shell: |
+    docker build -t finalproject-backend "{{ project_root }}/backend"
+    docker build -t finalproject-frontend "{{ project_root }}/frontend"
+    docker build -t finalproject-ml-service "{{ project_root }}/ml_service"
+    docker build -t finalproject-ml-service-retrain -f "{{ project_root }}/ml_service/Dockerfile.retrainer" "{{ project_root }}/ml_service"
+  args:
+    chdir: "{{ project_root }}"
+    executable: /bin/bash
+  environment: "{{ docker_env_vars }}"
+
+- name: List Docker images after build
+  shell: docker images
+  register: docker_images
+  environment: "{{ docker_env_vars }}"
+
+- name: Show Docker images found
+  debug:
+    var: docker_images.stdout_lines
+
+- name: Apply Kubernetes Manifests (ELK + Core Services + HPA)
+  shell: |
+    kubectl apply -f k8s/elk/logstash-configmap.yaml
+    kubectl apply -f k8s/elk/elasticsearch-deployment.yaml
+    kubectl apply -f k8s/elk/kibana-deployment.yaml
+    kubectl apply -f k8s/elk/logstash-deployment.yaml
+
+    kubectl apply -f k8s/backend-deployment.yaml
+    kubectl apply -f k8s/frontend-deployment.yaml
+    kubectl apply -f k8s/mlservice-deployment.yaml
+    kubectl apply -f k8s/retrainer-deployment.yaml
+
+    kubectl apply -f k8s/backend-hpa.yaml
+    kubectl apply -f k8s/mlservice-hpa.yaml
+  args:
+    chdir: "{{ project_root }}"
+    executable: /bin/bash
+
+- name: Wait for all pods to be ready
+  shell: kubectl wait --for=condition=Ready pods --all --timeout=300s
+
+- name: Start Port Forwarding in background
+  shell: |
+    pkill -f "kubectl port-forward" || true
+    nohup kubectl port-forward svc/backend-service 5000:5000 > /dev/null 2>&1 &
+    nohup kubectl port-forward svc/frontend-service 3000:3000 > /dev/null 2>&1 &
+    nohup kubectl port-forward svc/ml-service 6000:6000 > /dev/null 2>&1 &
+    kubectl wait --for=condition=ready pod -l app=kibana --timeout=60s
+    nohup kubectl port-forward svc/kibana-service 5601:5601 > /dev/null 2>&1 &
+  args:
+    executable: /bin/bash

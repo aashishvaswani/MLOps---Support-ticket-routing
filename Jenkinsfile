@@ -74,8 +74,9 @@ pipeline {
                 '''
             }
         }
-        /*
+        
         stage('Deploy with Ansible') {
+            /*
             steps {
                 script {
                     // Get password from Vault
@@ -97,9 +98,17 @@ pipeline {
                     sh "rm -f extra-vars.yml"
                 }
             }
+            */
+            steps {
+                script {
+                    sh '''
+                        ansible-playbook -i ansible/inventory.ini ansible/playbook.yaml
+                    '''
+                }
+            }
         }
-        */
 
+        /*
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
@@ -108,11 +117,12 @@ pipeline {
                 '''
             }
         }
+        */
 
         stage('Verify Log Forwarding (Debug)') {
             steps {
                 script {
-                    sh 'sleep 30'
+                    sh 'sleep 300'
                     sh 'kubectl logs deploy/logstash --tail=10'
                 }
             }
