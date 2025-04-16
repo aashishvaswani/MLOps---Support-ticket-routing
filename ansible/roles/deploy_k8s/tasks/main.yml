@@ -2,6 +2,12 @@
   debug:
     msg: "🗂️ Project root is {{ project_root }}"
 
+- name: Ensure Minikube is running
+  shell: |
+    minikube status || minikube start
+  args:
+    executable: /bin/bash
+
 - name: Show Docker environment config for Minikube
   shell: minikube docker-env --shell bash
   register: docker_env_output
