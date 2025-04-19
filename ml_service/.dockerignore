@@ -1,0 +1,19 @@
+# Bytecode and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+venv/
+
+# General logs
+*.log
+logs/
+
+# Notebooks and documentation
+*.ipynb
+*.md
+*.pdf
+
+# Git & editor configs
+.git/
+.gitignore
+.vscode/

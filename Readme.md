@@ -1,7 +1,6 @@
 # IT Service Ticket Classifier – Full MLOps Pipeline
 
-This project delivers a production-ready **MLOps pipeline** to classify IT support tickets into categories such as Hardware, HR, Access, etc., with real-time observability, feedback-driven retraining, and full DevOps automation. Developed for **CSE 816: Software Production Engineering**, it fulfills all rubric requirements, including advanced features like Vault, HPA, Ansible roles, and live patching.
-
+This project implements a production-grade **MLOps pipeline** for classifying IT support tickets into categories like Hardware, HR, and Access. It combines a Flask backend (serving a machine learning model), a React frontend, and a full DevOps lifecycle with real-time observability, feedback-driven retraining, and automated CI/CD. The system is designed with containerization, secure secret management, scalable orchestration, and modular infrastructure automation.
 ---
 
 ## Project Highlights
