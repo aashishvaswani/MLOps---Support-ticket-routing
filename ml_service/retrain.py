@@ -39,8 +39,6 @@ def merge_and_save(feedback_df):
 
     print(f"[{datetime.now()}] ✅ Feedback merged and dataset updated.")
 
-import subprocess
-
 def trigger_retrain():
     print(f"[{datetime.now()}] 🚀 Retraining started...", flush=True)
     try:
@@ -58,8 +56,6 @@ def trigger_retrain():
         print(e.stdout, flush=True)
         print(e.stderr, flush=True)
 
-
-
 def run_watcher():
     print(f"[{datetime.now()}] 👀 Retrainer started. Watching for feedback...")
     while True:
@@ -72,7 +68,6 @@ def run_watcher():
             trigger_retrain()
         else:
             print(f"[{datetime.now()}] Waiting... ({count}/{THRESHOLD} feedbacks)")
-
         time.sleep(30)
 
 if __name__ == "__main__":

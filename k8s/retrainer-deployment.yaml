@@ -17,9 +17,15 @@ spec:
           image: finalproject-ml-service-retrain
           imagePullPolicy: Never
           volumeMounts:
+            - name: shared-model
+              mountPath: /shared-model
             - name: shared-logs
               mountPath: /app/logs
       volumes:
+        - name: shared-model
+          hostPath:
+            path: /tmp/shared-model
+            type: DirectoryOrCreate
         - name: shared-logs
           hostPath:
             path: /tmp/shared-logs

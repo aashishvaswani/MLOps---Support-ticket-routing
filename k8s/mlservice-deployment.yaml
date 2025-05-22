@@ -12,17 +12,30 @@ spec:
       labels:
         app: ml-service
     spec:
+      volumes:
+        - name: shared-model
+          hostPath:
+            path: /tmp/shared-model
+            type: DirectoryOrCreate
+      initContainers:
+        - name: seed-model
+          image: finalproject-ml-service
+          imagePullPolicy: Never
+          command: ["/bin/sh", "-c"]
+          args:
+            - cp /app/model/*.pkl /shared-model/
+          volumeMounts:
+            - name: shared-model
+              mountPath: /shared-model
       containers:
-      - name: ml-service
-        image: finalproject-ml-service
-        imagePullPolicy: Never
-        ports:
-        - containerPort: 6000
-        resources:
-          requests:
-            cpu: "100m"
-          limits:
-            cpu: "500m"
+        - name: ml-service
+          image: finalproject-ml-service
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 6000
+          volumeMounts:
+            - name: shared-model
+              mountPath: /shared-model
 ---
 apiVersion: v1
 kind: Service

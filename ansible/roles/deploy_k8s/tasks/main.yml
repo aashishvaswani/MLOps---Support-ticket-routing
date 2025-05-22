@@ -40,6 +40,11 @@
   debug:
     var: docker_images.stdout_lines
 
+- name: Enable metrics-server addon in Minikube
+  shell: minikube addons enable metrics-server
+  args:
+    executable: /bin/bash
+
 - name: Apply Kubernetes Manifests (ELK + Core Services + HPA)
   shell: |
     kubectl apply -f k8s/elk/logstash-configmap.yaml
