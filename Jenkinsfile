@@ -107,26 +107,6 @@ pipeline {
                 }
             }
         }
-
-        /*
-        stage('Deploy to Kubernetes') {
-            steps {
-                sh '''
-                    chmod +x deploy-to-k8s.sh
-                    ./deploy-to-k8s.sh
-                '''
-            }
-        }
-        */
-
-        stage('Verify Log Forwarding (Debug)') {
-            steps {
-                script {
-                    sh 'sleep 300'
-                    sh 'kubectl logs deploy/logstash --tail=10'
-                }
-            }
-        }
     }
 
     post {

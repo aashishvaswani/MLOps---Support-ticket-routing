@@ -28,7 +28,7 @@ print(f"[{datetime.now()}] 🧹 Cleaning text...")
 df['cleaned_document'] = df['Document'].apply(clean_text)
 
 print(f"[{datetime.now()}] 🔢 TF-IDF vectorizing...")
-tfidf = TfidfVectorizer(max_features=1000)
+tfidf = TfidfVectorizer(max_features=500)
 X = tfidf.fit_transform(df['cleaned_document']).toarray()
 
 print(f"[{datetime.now()}] 🏷️ Label encoding...")
@@ -45,7 +45,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 print(f"[{datetime.now()}] 🤖 Training model...")
-model = LogisticRegression(max_iter=1000, n_jobs=1)
+model = LogisticRegression(max_iter=500, solver='liblinear')
 model.fit(X_train, y_train)
 
 print(f"[{datetime.now()}] 📈 Evaluating model...")

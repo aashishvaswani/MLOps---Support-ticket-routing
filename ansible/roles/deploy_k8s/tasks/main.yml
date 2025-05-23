@@ -45,7 +45,21 @@
   args:
     executable: /bin/bash
 
-- name: Apply Kubernetes Manifests (ELK + Core Services + HPA)
+- name: Enable ingress addon in Minikube
+  shell: minikube addons enable ingress
+  args:
+    executable: /bin/bash
+
+- name: Wait for ingress-nginx-controller pod to be ready
+  shell: |
+    kubectl wait --namespace ingress-nginx \
+      --for=condition=ready pod \
+      --selector=app.kubernetes.io/component=controller \
+      --timeout=180s
+  args:
+    executable: /bin/bash
+
+- name: Apply Kubernetes Manifests (ELK + Core Services + HPA + Ingress)
   shell: |
     kubectl apply -f k8s/elk/logstash-configmap.yaml
     kubectl apply -f k8s/elk/elasticsearch-deployment.yaml
@@ -59,20 +73,13 @@
 
     kubectl apply -f k8s/backend-hpa.yaml
     kubectl apply -f k8s/mlservice-hpa.yaml
+
+    kubectl apply -f k8s/ingress.yaml
   args:
     chdir: "{{ project_root }}"
     executable: /bin/bash
 
 - name: Wait for all pods to be ready
-  shell: kubectl wait --for=condition=Ready pods --all --timeout=300s
-
-- name: Start Port Forwarding in background
-  shell: |
-    pkill -f "kubectl port-forward" || true
-    nohup kubectl port-forward svc/backend-service 5000:5000 > /dev/null 2>&1 &
-    nohup kubectl port-forward svc/frontend-service 3000:3000 > /dev/null 2>&1 &
-    nohup kubectl port-forward svc/ml-service 6000:6000 > /dev/null 2>&1 &
-    kubectl wait --for=condition=ready pod -l app=kibana --timeout=60s
-    nohup kubectl port-forward svc/kibana-service 5601:5601 > /dev/null 2>&1 &
+  shell: kubectl wait --for=condition=Ready pods --all --timeout=500s
   args:
     executable: /bin/bash

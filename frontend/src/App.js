@@ -38,7 +38,7 @@ function App() {
 
   const handleFeedback = async () => {
     try {
-      const api = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const api = process.env.REACT_APP_API_URL || 'http://spe-backend.com';
       const res = await axios.post(`${api}/feedback`, {
         text,
         prediction,
