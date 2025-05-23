@@ -168,7 +168,7 @@ The entire system is **cloud-native**, observable, and capable of adapting to in
 - **Backend**: Unit tests using `pytest` for `/predict` and `/feedback` endpoints
 - **Jenkins**: Runs test suite in a Docker container after every build
 - **Frontend**: Basic rendering and form input testing using `App.test.js`
-- **Load & Scaling**: Simulated using Kubernetes HPA and stress testing tools like `hey`
+- **Load & Scaling**: Handled via Kubernetes HPA based on CPU utilization (auto-scales from 1 to 5 replicas for backend and ML service)
 - **Log Validation**: Via structured JSON output parsed into Kibana dashboards
 
 ---
